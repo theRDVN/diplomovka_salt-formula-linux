@@ -1,0 +1,167 @@
+linux:
+  system:
+    enabled: true
+    domain: 'p3test.dcom.sk'
+    environment: PROD3
+    timezone: 'Europe/Bratislava'
+    selinux: disabled
+    proxy:
+      pkg:
+        enabled: true
+        http: http://100.74.141.132:3128
+    user:
+      jboss:
+        name: 'jboss'
+        enabled: true
+        home: '/home/jboss'
+        groups:
+          - ssh
+    limit:
+      jboss:
+        enabled: true
+        domain: jboss
+        limits:
+          - type: soft
+            item: nofile
+            value: 65536
+          - type: hard
+            item: nofile
+            value: 131072
+    sudo:
+      enabled: true
+      requiretty: false
+      groups:
+        sysadmin: {}
+        domain\ admins: {}
+      users:
+        jboss:
+          hosts:
+          - ALL
+          commands:
+          - /etc/init.d/jboss
+          - /mnt/distribution/system/bin/environment.sh clean
+          - /mnt/distribution/system/bin/environment.sh appserver_clean
+    group:
+      ssh:
+        name: 'ssh'
+        enabled: true
+    kernel:
+      sysctl:
+        net.ipv4.tcp_keepalive_time: 3600
+    bash:
+      preserve_history: true
+    prompt:
+      default: '\[$(tput bold)$(tput setab 1)$(tput setaf 3)\][\u@\h:\w]\[$(tput sgr0)\]$'
+      root: '\[$(tput bold)$(tput setab 1)$(tput setaf 3)\][\u@\h:\w]\[$(tput sgr0)\]#'
+    motd: |
+      ------------------------------------------------------
+      ---- DCOM P3 PROTOTYPE Environment.               ----
+      ---- This is the salt-only managed server,        ----
+      ---- DO NOT use yum/rpm/untar to manage packages! ----
+      ------------------------------------------------------
+    ca_certs_source: salt://etc/ssl
+    ca_certs_dir: /etc/pki/ca-trust/source/anchors
+    ca_certificates:
+      - ^intra.dcom.sk*
+      - ^common*
+    repo:
+      epel:
+        enabled: true
+        mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch
+        pgpcheck: 0
+      salt-latest:
+        enabled: true
+        source: 'https://repo.saltstack.com/yum/redhat/6/x86_64/latest/'
+        pgpcheck: 0
+    package:
+      zip:
+        version: latest
+      unzip:
+        version: latest
+      curl:
+        version: latest
+      nc:
+        version: latest
+      man:
+        version: latest
+      lsof:
+        version: latest
+      nodejs:
+        version: latest
+      npm:
+        version: latest
+      coreutils:
+        version: latest
+      mc:
+        version: latest
+      vim-enhanced:
+        version: latest
+      wget:
+        version: latest
+      telnet:
+        version: latest
+      bind-utils:
+        version: latest
+      screen:
+        version: latest
+      tmux:
+        version: latest
+      bzip2:
+        version: latest
+      p7zip:
+        version: latest
+      htop:
+        version: latest
+      net-tools:
+        version: latest
+      links:
+        version: latest
+      git:
+        version: latest
+      tig:
+        version: latest
+      dos2unix:
+        version: latest
+      cronie:
+        version: latest
+      bash-completion:
+        version: latest
+      sshpass:
+        version: latest
+      rpcbind:
+        version: latest
+      nfs-utils:
+        version: latest
+      libcurl:
+        version: latest
+      samba-winbind:
+        version: latest
+  network:
+    enabled: true
+    resolv:
+      dns:
+      - 100.74.141.3
+      domain: p3test.dcom.sk
+      search:
+      - p3test.dcom.sk
+    purge_hosts: true
+    host:
+      node1:
+        address: 172.20.13.132
+        names:
+        - build.dcom.sk
+      node2:
+        address: 100.74.141.3
+        names:
+          - sp3adds06.p3test.dcom.sk
+          - sp3adds06
+  storage:
+    enabled: true
+    mount:
+      distribution:
+        enabled: true
+        path: /mnt/distribution
+        device: 172.20.13.132:/SI1BLDS01/distribution
+        file_system: nfs
+        opts: ro,tcp,nfsvers=3,port=12049,mountport=14048
+
